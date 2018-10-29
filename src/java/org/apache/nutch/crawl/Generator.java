@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configurable;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.jexl2.Expression;
@@ -88,6 +89,7 @@ public class Generator extends NutchTool implements Tool {
 
   protected static final Logger LOG = LoggerFactory
       .getLogger(MethodHandles.lookup().lookupClass());
+  private ObjectMapper mapper = new ObjectMapper();
 
   public static final String GENERATE_UPDATE_CRAWLDB = "generate.update.crawldb";
   public static final String GENERATOR_MIN_SCORE = "generate.min.score";
@@ -1015,7 +1017,7 @@ public class Generator extends NutchTool implements Tool {
 
   @Override
   public Map<String, Object> run(Map<String, Object> args, String crawlId) throws Exception {
-
+    LOG.info("Generator: args: " + mapper.writeValueAsString(args));
     Map<String, Object> results = new HashMap<>();
 
     long curTime = System.currentTimeMillis();

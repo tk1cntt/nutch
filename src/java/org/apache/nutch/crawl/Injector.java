@@ -48,6 +48,7 @@ import org.apache.nutch.util.NutchJob;
 import org.apache.nutch.util.NutchTool;
 import org.apache.nutch.util.TimingUtil;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +86,7 @@ import java.util.Random;
 public class Injector extends NutchTool implements Tool {
   private static final Logger LOG = LoggerFactory
       .getLogger(MethodHandles.lookup().lookupClass());
+  private ObjectMapper mapper = new ObjectMapper();
 
   /** property to pass value of command-line option -filterNormalizeAll to mapper */
   public static final String URL_FILTER_NORMALIZE_ALL = "crawldb.inject.filter.normalize.all";
@@ -584,6 +586,7 @@ public class Injector extends NutchTool implements Tool {
     if(args.size()<1){
       throw new IllegalArgumentException("Required arguments <url_dir> or <seedName>");
     }
+    LOG.info("Injector: args: " + mapper.writeValueAsString(args));
     Path input;
     Object path = null;
     if(args.containsKey(Nutch.ARG_SEEDDIR)) {
@@ -614,7 +617,8 @@ public class Injector extends NutchTool implements Tool {
     } else {
       crawlDb = new Path(crawlId + "/crawldb");
     }
-    inject(crawlDb, input);
+    // inject(crawlDb, input);
+    inject(crawlDb, input, true, true);
     results.put(Nutch.VAL_RESULT, Integer.toString(0));
     return results;
   }

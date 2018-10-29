@@ -373,6 +373,21 @@ public class CrawlDb extends NutchTool implements Tool {
       update(crawlDb, dirs.toArray(new Path[dirs.size()]), normalize,
           filter, additionsAllowed, force);
       results.put(Nutch.VAL_RESULT, Integer.toString(0));
+      /*
+      //Delete segments temp
+      Path segmentDir = new Path(crawlId+"/segments");
+      FileSystem fs = segmentDir.getFileSystem(getConf());
+      FileStatus[] files = fs.listStatus(segmentDir, HadoopFSUtil.getPassDirectoriesFilter(fs));
+      Path[] sPaths = HadoopFSUtil.getPaths(files);
+      // files = fs.listStatus(sPaths[0], HadoopFSUtil.getPassDirectoriesFilter(fs));
+      // sPaths = HadoopFSUtil.getPaths(files);
+      for (Path path : sPaths) {
+        try {
+          LOG.error("CrawlDb path: " + path.getName());
+          fs.delete(path, true);
+        } catch (Exception ex) {}
+      }
+      //*/
       return results;
     } catch (Exception e) {
       LOG.error("CrawlDb update: " + StringUtils.stringifyException(e));

@@ -30,12 +30,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.nutch.service.NutchServer;
 import org.apache.nutch.service.model.request.SeedList;
 import org.apache.nutch.service.model.request.SeedUrl;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,7 @@ import org.slf4j.LoggerFactory;
 public class SeedResource extends AbstractResource {
   private static final Logger LOG = LoggerFactory
       .getLogger(MethodHandles.lookup().lookupClass());
+  private ObjectMapper mapper = new ObjectMapper();
 
   /**
    * Gets the list of seedFiles already created 
@@ -72,20 +75,19 @@ public class SeedResource extends AbstractResource {
   @Produces(MediaType.TEXT_PLAIN)
   public Response createSeedFile(SeedList seedList) {
     try {
-    if (seedList == null) {
-      return Response.status(Status.BAD_REQUEST)
-          .entity("Seed list cannot be empty!").build();
-    }
-    Collection<SeedUrl> seedUrls = seedList.getSeedUrls();
-    
-    String seedFilePath = writeToSeedFile(seedUrls);
-    seedList.setSeedFilePath(seedFilePath);
-    NutchServer.getInstance().getSeedManager().
-          setSeedList(seedList.getName(), seedList);
-    return Response.ok().entity(seedFilePath).build();
-    } catch (Exception e) {
-      LOG.warn("Error while creating seed : {}", e.getMessage());
-    }
+      if (seedList == null) {
+        return Response.status(Status.BAD_REQUEST)
+            .entity("Seed list cannot be empty!").build();
+      }
+      Collection<SeedUrl> seedUrls = seedList.getSeedUrls();
+      String seedFilePath = writeToSeedFile(seedUrls);
+      seedList.setSeedFilePath(seedFilePath);
+      NutchServer.getInstance().getSeedManager().
+            setSeedList(seedList.getName(), seedList);
+      return Response.ok().entity(seedFilePath).build();
+      } catch (Exception e) {
+        LOG.warn("Error while creating seed : {}", e.getMessage());
+      }
     return Response.serverError().build();
   }
 

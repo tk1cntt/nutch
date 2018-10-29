@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +105,8 @@ public class Fetcher extends NutchTool implements Tool {
 
   private static final Logger LOG = LoggerFactory
       .getLogger(MethodHandles.lookup().lookupClass());
+
+  private ObjectMapper mapper = new ObjectMapper();
 
   public static class InputFormat extends
   SequenceFileInputFormat<Text, CrawlDatum> {
@@ -564,6 +567,7 @@ public class Fetcher extends NutchTool implements Tool {
 
   @Override
   public Map<String, Object> run(Map<String, Object> args, String crawlId) throws Exception {
+    LOG.info("Fetcher: args: " + mapper.writeValueAsString(args));
 
     Map<String, Object> results = new HashMap<>();
 
@@ -583,6 +587,20 @@ public class Fetcher extends NutchTool implements Tool {
         if(segmentsArray.length > 1){
        	  LOG.warn("Only the first segment of segments array is used.");
         }
+      }
+    }
+    else if(args.containsKey(Nutch.ARG_SEGMENTDIR)) {
+      Object seg = args.get(Nutch.ARG_SEGMENTDIR);
+      if(seg instanceof String){
+        File segmentsDir = new File(seg.toString());
+        File[] segmentsList = segmentsDir.listFiles();
+        Arrays.sort(segmentsList, (f1, f2) -> {
+          if(f1.lastModified()>f2.lastModified())
+            return -1;
+          else
+            return 0;
+        });
+        segment = new Path(segmentsList[0].getPath());
       }
     }
     else {

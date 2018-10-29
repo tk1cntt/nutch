@@ -17,6 +17,7 @@
 
 package org.apache.nutch.parse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.nutch.crawl.CrawlDatum;
@@ -64,6 +65,7 @@ public class ParseSegment extends NutchTool implements Tool {
 
   private static final Logger LOG = LoggerFactory
       .getLogger(MethodHandles.lookup().lookupClass());
+  private ObjectMapper mapper = new ObjectMapper();
 
   public static final String SKIP_TRUNCATED = "parser.skip.truncated";
 
@@ -314,7 +316,7 @@ public class ParseSegment extends NutchTool implements Tool {
    * Used for Nutch REST service
    */
   public Map<String, Object> run(Map<String, Object> args, String crawlId) throws Exception {
-
+    LOG.info("Parse: args: " + mapper.writeValueAsString(args));
     Map<String, Object> results = new HashMap<>();
     Path segment = null;
     if(args.containsKey(Nutch.ARG_SEGMENTS)) {
@@ -332,6 +334,20 @@ public class ParseSegment extends NutchTool implements Tool {
         if(segmentsArray.length > 1){
        	  LOG.warn("Only the first segment of segments array is used.");
         }
+      }
+    }
+    else if(args.containsKey(Nutch.ARG_SEGMENTDIR)) {
+      Object seg = args.get(Nutch.ARG_SEGMENTDIR);
+      if(seg instanceof String){
+        File segmentsDir = new File(seg.toString());
+        File[] segmentsList = segmentsDir.listFiles();
+        Arrays.sort(segmentsList, (f1, f2) -> {
+          if(f1.lastModified()>f2.lastModified())
+            return -1;
+          else
+            return 0;
+        });
+        segment = new Path(segmentsList[0].getPath());
       }
     }
     else {

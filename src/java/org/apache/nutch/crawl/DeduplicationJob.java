@@ -283,6 +283,16 @@ public class DeduplicationJob extends NutchTool implements Tool {
       }
     }
 
+    return dedup(crawlDb, group, compareOrder);
+  }
+
+  public int dedup(Path crawlDb) throws IOException {
+    String group = "none";
+    String compareOrder = "score,fetchTime,urlLength";
+    return dedup(crawlDb, group, compareOrder);
+  }
+
+  public int dedup(Path crawlDb, String group, String compareOrder) throws IOException {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     long start = System.currentTimeMillis();
     LOG.info("DeduplicationJob: starting at " + sdf.format(start));

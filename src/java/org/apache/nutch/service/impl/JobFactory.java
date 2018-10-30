@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.nutch.service.JobManager.JobType;
+import org.apache.nutch.crawl.Crawl;
 import org.apache.nutch.crawl.CrawlDb;
 import org.apache.nutch.crawl.DeduplicationJob;
 import org.apache.nutch.crawl.Generator;
@@ -39,6 +40,7 @@ public class JobFactory {
 
   static {
     typeToClass = Maps.newHashMap();
+    typeToClass.put(JobType.CRAWL, Crawl.class);
     typeToClass.put(JobType.INJECT, Injector.class);
     typeToClass.put(JobType.GENERATE, Generator.class);
     typeToClass.put(JobType.FETCH, Fetcher.class);

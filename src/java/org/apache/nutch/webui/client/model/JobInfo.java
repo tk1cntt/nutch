@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class JobInfo implements Serializable {
   public static enum JobType {
-    INJECT, GENERATE, FETCH, PARSE, UPDATEDB, INDEX, READDB, CLASS
+    CRAWL, INJECT, GENERATE, FETCH, PARSE, UPDATEDB, INDEX, READDB, CLASS
   };
 
   public static enum State {

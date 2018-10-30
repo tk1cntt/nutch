@@ -89,6 +89,12 @@ public interface Nutch {
 	public static final String ARG_CRAWLDB = "crawldb";
 	/** Argument key to specify the location of linkdb for the REST endpoints **/
 	public static final String ARG_LINKDB = "linkdb";
+	/** Argument key to specify number of threads for the REST endpoints **/
+	public static final String ARG_THREADS = "threads";
+	/** Argument key to specify how to depth for the REST endpoints **/
+	public static final String ARG_DEPTH = "depth";
+	/** Argument key to specify topN of fetch for the REST endpoints **/
+	public static final String ARG_TOPN = "topN";
 	/** Name of the key used in the Result Map sent back by the REST endpoint **/
 	public static final String VAL_RESULT = "result";
 	/** Argument key to specify the location of a directory of segments for the REST endpoints.
